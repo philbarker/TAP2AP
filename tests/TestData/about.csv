@@ -1,0 +1,5 @@
+url,tap.csv
+title,Credential Engine Registry profle of CTDL for Credential Organizations
+description,Tabular Application Profile expressing required and recommended properties for Credential Organizations in CE Registry. Based on CE Registry Minimum Data Policy by way of SHACL. 
+author,Phil Barker
+date,2021-03-26

@@ -1,0 +1,207 @@
+from csv import DictReader
+from dctap import csvreader  # , TAPShape, TAPStatementConstraint
+from dctap.config import get_config
+from AP import AP, PropertyStatement
+import re
+
+# TODO read these from config
+lang = "en"  # default language
+trueVals = ["true", "yes", "t", "y", "1"]  # probably not needed..
+falseVals = ["false", "no", "f", "n", "0"]  # ... I think dctap normalises this
+# chars used to separate multiple entries in cells
+prop_splitters = ", |; |,|;| \n| |\n"
+nodeType_splitters = ", |; |,|;| \n| |\n"
+dataType_splitters = ", |; |,|;| \n| |\n"
+constraint_splitters = ", |; |,|;| \n| |\n"
+shape_splitters = ", |; |,|;| \n| |\n"
+
+
+class TAP2APConverter:
+    """Classs comprising AP and TAP data, with methods to convert latter to former"""
+
+    def __init__(self, tap_fname, config_fname):
+        self.ap = AP()
+        self.tap = dict()
+        self.tap["tap_fname"] = tap_fname
+        self.tap["config_fname"] = config_fname
+        self.load_tap(tap_fname, config_fname)
+
+    def load_tap(self, tap_fname, config_fname):
+        """Load TAP data from file."""
+        self.tap["config_dict"] = get_config(config_fname)
+        with open(tap_fname, "r") as csv_fileObj:
+            csvreader_output = csvreader(csv_fileObj, self.tap["config_dict"])
+            self.tap["shapes_dict"], self.tap["warnings_dict"] = csvreader_output
+
+    def convert_TAP_AP(self):
+        """Convert a TAP into python AP object."""
+        shapes = self.tap["shapes_dict"]["shapes"]
+        for shape in shapes:
+            # check shapeID once and add it to all prop statements in shape
+            sh_id = self.check_shapeID(shape["shapeID"])
+            for sc in shape["statement_constraints"]:
+                ps = PropertyStatement()
+                ps.add_shape(sh_id)
+                # property ID is mandatory, no need to check for key
+                self.convert_propertyIDs(sc["propertyID"], ps)
+                if "propertyLabel" in sc.keys():
+                    self.convert_labels(sc["propertyLabel"], ps)
+                if "mandatory" in sc.keys():
+                    self.convert_mandatory(sc["mandatory"], ps)
+                if "repeatable" in sc.keys():
+                    self.convert_repeatable(sc["repeatable"], ps)
+                if "valueNodeType" in sc.keys():
+                    self.convert_valueNodeTypes(sc["valueNodeType"], ps)
+                if "valueDataType" in sc.keys():
+                    self.convert_valueDataTypes(sc["valueDataType"], ps)
+                if "valueConstraint" in sc.keys():
+                    self.convert_valueConstraints(sc["valueConstraint"], ps)
+                if "valueConstraintType" in sc.keys():
+                    self.convert_valueConstraintType(sc["valueConstraintType"], ps)
+                if "valueShape" in sc.keys():
+                    self.convert_valueShapes(sc["valueShape"], ps)
+                if "note" in sc.keys():
+                    self.convert_notes(sc["note"], ps)
+                if "severity" in sc.keys():
+                    self.convert_severity(sc["severity"], ps)
+                self.ap.add_propertyStatement(ps)
+
+    def check_shapeID(self, sh_id):
+        """Check a string matches a shape id."""
+        # ShapeID should already be a key in shapeInfo
+        # IDEA: could optionally add it if it is not.
+        if type(sh_id) == str:
+            pass
+        else:
+            msg = "shapeID must be a string."
+            raise TypeError(msg)
+        if sh_id in self.ap.shapeInfo.keys():
+            pass
+        else:
+            msg = "No shape info for " + sh_id
+            raise ValueError(msg)
+        return sh_id
+
+    def convert_propertyIDs(self, propertiesStr, ps):
+        """Convert a string to a list of property ids, add them to a propertyStatement."""
+        if type(propertiesStr) == str:
+            for p in re.split(prop_splitters, propertiesStr):
+                ps.add_property(p)
+        else:
+            msg = "Properties must be passed in a string."
+            raise TypeError(msg)
+
+    def convert_labels(self, label, ps):
+        """Take string as label and add it to a propertyStatement."""
+        # TODO: multiple labels, different languages
+        if type(label) == str:
+            ps.add_label(lang, label)
+        else:
+            msg = "Labels must be passed in a string."
+            raise TypeError(msg)
+
+    def convert_mandatory(self, mandyStr, ps):
+        """Convert a string to boolean true or false and add it as value of the `mandatory` property of propertyStatement."""
+        if type(mandyStr) == str:
+            if mandyStr.lower() in trueVals:
+                ps.add_mandatory(True)
+            elif mandyStr.lower() in falseVals:
+                ps.add_mandatory(False)
+            else:
+                msg = "Value for mandatory not recognised: " + mandyStr
+                raise ValueError(msg)
+        else:
+            msg = "Value for mandatory must be a string."
+            raise TypeError(msg)
+
+    def convert_repeatable(self, rptStr, ps):
+        """Convert a string to boolean true or false and add it as value of the `repeatable` property of propertyStatement."""
+        if type(rptStr) == str:
+            if rptStr.lower() in trueVals:
+                ps.add_repeatable(True)
+            elif rptStr.lower() in falseVals:
+                ps.add_repeatable(False)
+            else:
+                msg = "Value for repeatable not recognised: " + rptStr
+                raise ValueError(msg)
+        else:
+            msg = "Value for repeatable must be a string."
+            raise TypeError(msg)
+
+    def convert_valueNodeTypes(self, nodeTypesStr, ps):
+        """Convert a string of node types and into separate types and add them as values of the `valueNodeTypes` property of propertyStatement."""
+        if type(nodeTypesStr) == str:
+            for nodeType in re.split(nodeType_splitters, nodeTypesStr):
+                ps.add_valueNodeType(nodeType)
+        else:
+            msg = "Value for node types must be a string."
+            raise TypeError(msg)
+
+    def convert_valueDataTypes(self, dataTypesStr, ps):
+        """Convert a string of data types and into separate types and add them as values of the `valueNodeTypes` property of propertyStatement."""
+        if type(dataTypesStr) == str:
+            for dataType in re.split(dataType_splitters, dataTypesStr):
+                ps.add_valueDataType(dataType)
+        else:
+            msg = "Value for data types must be a string."
+            raise TypeError(msg)
+
+    def convert_valueConstraints(self, constraintsStr, ps):
+        """Convert a string of constraints into separate items and add them as values of the `valueConstraints` property of propertyStatement."""
+        if type(constraintsStr) == str:
+            for constraint in re.split(constraint_splitters, constraintsStr):
+                ps.add_valueConstraint(constraint)
+        else:
+            msg = "Value for constraints must be a string."
+            raise TypeError(msg)
+
+    def convert_valueConstraintType(self, constrTypeStr, ps):
+        """Add a string as the value of the `valueConstraintType` property of propertyStatement."""
+        if type(constrTypeStr) == str:
+            ps.add_valueConstraintType(constrTypeStr)
+        else:
+            msg = "Value for constraint type must be a string."
+            raise TypeError(msg)
+
+    def convert_valueShapes(self, shapeStr, ps):
+        """Convert a string of shapes into separate items and add them as values of the `valueShapes` property of propertyStatement."""
+
+        if type(shapeStr) == str:
+            for shape in re.split(shape_splitters, shapeStr):
+                self.check_shapeID(shape)
+                ps.add_valueShape(shape)
+        else:
+            msg = "Value for shapes must be a string."
+            raise TypeError(msg)
+
+    def convert_notes(self, noteStr, ps):
+        """Take string as note and add it to a propertyStatement."""
+        # TODO: multiple notes, different languages
+        if type(noteStr) == str:
+            ps.add_note(lang, noteStr)
+        else:
+            msg = "Notes must be passed in a string."
+            raise TypeError(msg)
+
+    def convert_severity(self, severityStr, ps):
+        """Add a string as the value of the `severity` property of propertyStatement."""
+        if type(severityStr) == str:
+            ps.add_severity(severityStr)
+        else:
+            msg = "Value for severity must be a string."
+            raise TypeError(msg)
+
+    def convert_namespaces(self, source, fname=""):
+        """Convert namespaces from TAP config file or load from AP csv."""
+        if source == "TAP":
+            prefixes = self.tap["config_dict"]["prefixes"]
+            for prefix in prefixes:
+                if prefix[:-1] != "":  # ignore last char which is ":"
+                    self.ap.add_namespace(prefix[:-1], prefixes[prefix])
+                else:
+                    self.ap.add_namespace("_", prefixes[prefix])
+        elif source == "csv":
+            self.ap.load_namespaces(fname)
+        else:
+            msg = 'source for namespaces must be "TAP" or "csv".'
+            raise exception(msg)

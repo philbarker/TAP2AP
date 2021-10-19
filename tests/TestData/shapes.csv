@@ -1,0 +1,6 @@
+shapeID,label,comment,target,targetType,mandatory,severity,Note
+#CredentialOrganization,Credential Organization Shape,Shape to validate Credential Organization instances,ceterms:CredentialOrganization,Class,TRUE,Violation,
+#Address,Postal Address,Validates Addresses in Credential Organization instances,ceterms:address,ObjectsOf,TRUE,Violation,
+#AgentTypeAlignment,Agent Type Alignment Object Shape,Validates Alignment Objects used for agentType in Credential Organization instances,ceterms:agentType,ObjectsOf,TRUE,Violation,
+#AgentSectorTypeAlignment,Agent Sector Type Alignment Object Shape,Validates Alignment Objects used for agentSectorType in Credential Organization instances,ceterms:agentSectorType,ObjectsOf,TRUE,Violation,
+#nodePresent,Existence check,Shape to check there is a Credential Organization instance,ceterms:CredentialOrganization,Class,TRUE,,Not sure how to do this

@@ -1,0 +1,41 @@
+shapeID,propertyID,propertyLabel,mandatory,repeatable,valueNodeType,valueDataType,valueConstraint,valueConstraintType,valueShape,note,severity
+#CredentialOrganization,rdf:type,member of class,TRUE,FALSE,IRI,,ceterms:CredentialOrganization,,,,Violation
+#CredentialOrganization,ceterms:name,Name,TRUE,FALSE,Literal,rdf:langString,,,,,Violation
+#CredentialOrganization,ceterms:description,Description,TRUE,FALSE,Literal,rdf:langString,10,minLength,,,Violation
+#CredentialOrganization,ceterms:subjectWebpage,Subject Webpage,TRUE,FALSE,IRI,,,,,,Violation
+#CredentialOrganization,ceterms:address ceterms:email,Contact,TRUE,TRUE,,,,,,,Violation
+#CredentialOrganization,ceterms:email,Email address,FALSE,TRUE,Literal,xsd:string,/.+@.+/,pattern,,,Violation
+#CredentialOrganization,ceterms:address,Postal address,FALSE,TRUE,IRI BNODE,,,,#Address,,Violation
+#CredentialOrganization,ceterms:agentType,Agent type,TRUE,TRUE,BNODE,,,,#AgentTypeAlignment,,Violation
+#CredentialOrganization,ceterms:agentSectorType,Agent Sector Type,TRUE,TRUE,BNODE,,,,#AgentSectorTypeAlignment,,Violation
+#CredentialOrganization,ceterms:ctid,CTID,TRUE,FALSE,Literal,xsd:string,/ce-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}/,pattern,,,Violation
+#Address,rdf:type,member of class,TRUE,TRUE,IRI,,ceterms:Address,,,,Violation
+#AgentTypeAlignment,rdf:type,member of class,TRUE,FALSE,IRI,,ceterms:CredentialAlignmentObject,,,,Violation
+#AgentTypeAlignment,ceterms:framework,framework,TRUE,FALSE,IRI,,ceterms:OrganizationType,,,,Violation
+#AgentTypeAlignment,ceterms:targetNode,target node,TRUE,TRUE,IRI,,"orgType:AssessmentBody 
+orgType:Business 
+orgType:BusinessAssociation 
+orgType:CertificationBody 
+orgType:Collaborative 
+orgType:CoordinatingBody 
+orgType:FourYear 
+orgType:Government 
+orgType:HighSchool 
+orgType:LaborUnion 
+orgType:Magnet 
+orgType:Military 
+orgType:NonTraditional 
+orgType:Postsecondary 
+orgType:PrimarilyOnline 
+orgType:ProfessionalAssociation 
+orgType:QualityAssurance 
+orgType:SecondarySchool 
+orgType:Technical 
+orgType:TrainingProvider 
+orgType:TwoYear 
+orgType:Vendor ",,,,Violation
+#AgentSectorTypeAlignment,rdf:type,member of class,TRUE,FALSE,IRI,,ceterms:CredentialAlignmentObject,,,,Violation
+#AgentSectorTypeAlignment,ceterms:framework,framework,TRUE,FALSE,IRI,,ceterms:AgentSector,,,,Violation
+#AgentSectorTypeAlignment,ceterms:targetNode,agent sector target node,TRUE,FALSE,IRI,,"agentSector:PrivateForProfit 
+agentSector:Public 
+agentSector:PrivateNonProfit ",,,,Violation

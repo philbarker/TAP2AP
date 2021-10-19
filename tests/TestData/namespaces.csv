@@ -1,0 +1,8 @@
+prefix,URI
+sh,http://www.w3.org/ns/shacl#
+rdf,http://www.w3.org/1999/02/22-rdf-syntax-ns#
+rdfs,http://www.w3.org/2000/01/rdf-schema#
+xsd,http://www.w3.org/2001/XMLSchema#
+ceterms,https://purl.org/ctdl/terms/
+agentSector,https://purl.org/ctdl/vocabs/agentSector/
+orgType,https://purl.org/ctdl/vocabs/orgType/

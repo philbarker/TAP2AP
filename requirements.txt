@@ -1,0 +1,3 @@
+py-getch
+-e git+https://github.com/philbarker/APClasses#egg=AP
+https://github.com/dcmi/dctap-python/archive/main.zip
