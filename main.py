@@ -13,7 +13,7 @@ aboutFileName = "tests/TestData/about.csv"
 shapesFileName = "tests/TestData/shapes.csv"
 
 if __name__ == "__main__":
-    print("\nTAP2AP comprises some methods for converting Dublin Core Tabular (TAP) Application Profiles to a python Application Profile data object (AP) for application profiles, with methods to populate them.\n\nOther programs can do interesting things with the AP.\n\nThere is no command line interface. \n\n")
+    print("\nTAP2AP comprises some methods for converting a Dublin Core Tabular Application Profile (TAP) to a python Application Profile data object (AP).\n\nOther programs can do interesting things with the AP.\n\nThere is no command line interface. \n\n")
     pause('Press any key to continue...')
     print("\nLet's use test data create an example application profile and then display it.")
     print("* TAP file is: ", tapFileName)
