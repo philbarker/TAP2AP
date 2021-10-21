@@ -4,8 +4,9 @@ from dctap.config import get_config
 from AP import AP, PropertyStatement
 import re
 
+# defaults may be overridden by metadata file e.g. about.csv
+default_language = "en-US"  # default language
 # TODO read these from config
-lang = "en"  # default language
 trueVals = ["true", "yes", "t", "y", "1"]  # probably not needed..
 falseVals = ["false", "no", "f", "n", "0"]  # ... I think dctap normalises this
 # chars used to separate multiple entries in cells
@@ -32,6 +33,9 @@ class TAP2APConverter:
         with open(tap_fname, "r") as csv_fileObj:
             csvreader_output = csvreader(csv_fileObj, self.tap["config_dict"])
             self.tap["shapes_dict"], self.tap["warnings_dict"] = csvreader_output
+
+    def load_AP_Metadata(self, fname):
+        self.ap.load_metadata(fname)
 
     def convert_TAP_AP(self):
         """Convert a TAP into python AP object."""
@@ -94,6 +98,10 @@ class TAP2APConverter:
     def convert_labels(self, label, ps):
         """Take string as label and add it to a propertyStatement."""
         # TODO: multiple labels, different languages
+        try:
+            lang = self.ap.metadata["language"]
+        except (KeyError, ValueError):
+            lang = default_language
         if type(label) == str:
             ps.add_label(lang, label)
         else:
@@ -177,6 +185,10 @@ class TAP2APConverter:
     def convert_notes(self, noteStr, ps):
         """Take string as note and add it to a propertyStatement."""
         # TODO: multiple notes, different languages
+        try:
+            lang = self.ap.metadata["language"]
+        except  (KeyError, ValueError):
+            lang = default_language
         if type(noteStr) == str:
             ps.add_note(lang, noteStr)
         else:

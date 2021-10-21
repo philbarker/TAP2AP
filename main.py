@@ -26,7 +26,7 @@ if __name__ == "__main__":
                                                      # This also reads the TAP
     c.convert_namespaces("TAP") # Convert any namespaces in the TAP
     c.convert_namespaces("csv", namespaceFileName) # Convert AP namespcs
-    c.ap.load_metadata(aboutFileName) # load metadata about the AP
+    c.load_AP_Metadata(aboutFileName) # load metadata about the AP
     c.ap.load_shapeInfo(shapesFileName) # load info about shapes in AP
     c.convert_TAP_AP() # convert data from TAP into AP
     c.ap.dump() # print out the AP

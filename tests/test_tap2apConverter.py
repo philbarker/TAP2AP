@@ -46,10 +46,10 @@ def test_convert_namespaces(test_Converter):
     assert c.ap.namespaces["sh"] == "http://www.w3.org/ns/shacl#"
 
 
-def test_load_metadata(test_Converter):
+def test_load_AP_metadata(test_Converter):
     c = test_Converter
     assert c.ap.metadata == {}
-    c.ap.load_metadata(aboutFileName)
+    c.load_AP_Metadata(aboutFileName)
     assert c.ap.metadata["url"] == "tap.csv"
     assert c.ap.metadata["date"] == "2021-03-26"
 
@@ -226,7 +226,7 @@ def test_convert_notes(test_Converter):
     ps = PropertyStatement()
     note = "test one"
     c.convert_notes(note, ps)
-    ps.notes == [{"en": "test one"}]
+    assert ps.notes == {"en": "test one"}
     note = 42
     with pytest.raises(TypeError) as e:
         c.convert_notes(note, ps)
