@@ -211,7 +211,7 @@ class TAP2APConverter:
                 if prefix[:-1] != "":  # ignore last char which is ":"
                     self.ap.add_namespace(prefix[:-1], prefixes[prefix])
                 else:
-                    self.ap.add_namespace("_", prefixes[prefix])
+                    self.ap.add_namespace("default", prefixes[prefix])
         elif source == "csv":
             self.ap.load_namespaces(fname)
         else:

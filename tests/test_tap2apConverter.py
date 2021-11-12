@@ -39,7 +39,7 @@ def test_convert_namespaces(test_Converter):
     assert c.ap.namespaces == {}
     c.convert_namespaces("TAP")
     assert len(c.ap.namespaces) == 16
-    assert c.ap.namespaces["_"] == "http://example.org/"
+    assert c.ap.namespaces["default"] == "http://example.org/"
     assert c.ap.namespaces["xsd"] == "http://www.w3.org/2001/XMLSchema#"
     c.convert_namespaces("csv", namespaceFileName)
     assert len(c.ap.namespaces) == 18
