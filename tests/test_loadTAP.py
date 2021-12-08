@@ -1,4 +1,5 @@
 import pytest
+from pprint import PrettyPrinter
 from dctap import csvreader  # , TAPShape, TAPStatementConstraint
 from dctap.config import get_config
 from AP import AP, PropertyStatement
@@ -29,3 +30,11 @@ def test_loadTAP():
     sh3Constraints = tapshapes_dict["shapes"][3]["statement_constraints"]
     assert sh3Constraints[0]["propertyID"] == "rdf:type"
     assert sh3Constraints[2]["severity"] == "Violation"
+    sh0Constraints =  tapshapes_dict["shapes"][0]["statement_constraints"]
+    # trying to understand why \ in a regex is exported as \\ in other progs
+    assert sh0Constraints[5]["propertyLabel"] == "Email address"
+    # in TAP value of email addr is regex: /.+@.+\..+/
+    PrettyPrinter().pprint(sh0Constraints[5]) # regex is stored with \\
+    print(sh0Constraints[5]["valueConstraint"]) # value prints as \
+    assert sh0Constraints[5]["valueConstraint"] == "/.+@.+\..+/"  # passes
+    assert sh0Constraints[5]["valueConstraint"] == "/.+@.+\\..+/" # also passes

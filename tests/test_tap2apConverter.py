@@ -188,6 +188,11 @@ orgType:Business"""
     with pytest.raises(TypeError) as e:
         c.convert_valueConstraints(vC, ps)
     assert str(e.value) == "Value for constraints must be a string."
+    vC = "\." # testing how escape chars are handled
+    c.convert_valueConstraints(vC, ps)
+    print(ps.valueConstraints) # stored as \\.
+    assert "\." in ps.valueConstraints  # passes
+    assert "\\." in ps.valueConstraints # also passes
 
 
 def test_convert_valueConstraintType(test_Converter):
