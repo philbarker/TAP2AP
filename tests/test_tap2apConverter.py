@@ -184,10 +184,18 @@ orgType:Business"""
     c.convert_valueConstraints(vC, ps)
     assert "orgType:AssessmentBody" in ps.valueConstraints
     assert "orgType:Business" in ps.valueConstraints
+    vC = ["orgType:Government", "orgType:HEI"]
+    c.convert_valueConstraints(vC, ps)
+    assert "orgType:Government" in ps.valueConstraints
+    assert "orgType:HEI" in ps.valueConstraints
     vC = 2
     with pytest.raises(TypeError) as e:
         c.convert_valueConstraints(vC, ps)
-    assert str(e.value) == "Value for constraints must be a string."
+    assert str(e.value) == "Value for constraints must be a string or a list."
+    vC = [2]
+    with pytest.raises(TypeError) as e:
+        c.convert_valueConstraints(vC, ps)
+    assert str(e.value) == "Value for constraint must be a string."
     vC = "\." # testing how escape chars are handled
     c.convert_valueConstraints(vC, ps)
     print(ps.valueConstraints) # stored as \\.

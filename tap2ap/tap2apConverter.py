@@ -154,13 +154,22 @@ class TAP2APConverter:
             msg = "Value for data types must be a string."
             raise TypeError(msg)
 
-    def convert_valueConstraints(self, constraintsStr, ps):
+    def convert_valueConstraints(self, constraints, ps):
         """Convert a string of constraints into separate items and add them as values of the `valueConstraints` property of propertyStatement."""
-        if type(constraintsStr) == str:
-            for constraint in re.split(constraint_splitters, constraintsStr):
+        if type(constraints) is str:
+            for constraint in re.split(constraint_splitters, constraints):
                 ps.add_valueConstraint(constraint)
+        elif type(constraints) is list:
+            for constraint in constraints:
+                if type(constraint) is str:
+                    ps.add_valueConstraint(constraint)
+                else:
+                    print(constraint)
+                    msg = "Value for constraint must be a string."
+                    raise TypeError(msg)
         else:
-            msg = "Value for constraints must be a string."
+            print(constraints)
+            msg = "Value for constraints must be a string or a list."
             raise TypeError(msg)
 
     def convert_valueConstraintType(self, constrTypeStr, ps):
