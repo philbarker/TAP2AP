@@ -1,0 +1,7 @@
+setup.py
+TAP2AP.egg-info/PKG-INFO
+TAP2AP.egg-info/SOURCES.txt
+TAP2AP.egg-info/dependency_links.txt
+TAP2AP.egg-info/top_level.txt
+tap2ap/__init__.py
+tap2ap/tap2apConverter.py
