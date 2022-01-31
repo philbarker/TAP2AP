@@ -16,25 +16,26 @@ def test_loadTAP():
     with open(tapFileName, "r") as csv_fileObj:
         csvreader_output = csvreader(csv_fileObj, config_dict)
     tapshapes_dict, warnings_dict = csvreader_output
-    assert len(warnings_dict) == 4
+    assert len(warnings_dict) == 2
     assert "shapes" in tapshapes_dict.keys()
-    assert len(tapshapes_dict["shapes"]) == 4
-    assert tapshapes_dict["shapes"][0]["shapeID"] == "#CredentialOrganization"
-    assert tapshapes_dict["shapes"][1]["shapeID"] == "#Address"
-    assert tapshapes_dict["shapes"][2]["shapeID"] == "#AgentTypeAlignment"
-    assert tapshapes_dict["shapes"][3]["shapeID"] == "#AgentSectorTypeAlignment"
-    assert len(tapshapes_dict["shapes"][0]["statement_constraints"]) == 10
-    assert len(tapshapes_dict["shapes"][1]["statement_constraints"]) == 1
-    assert len(tapshapes_dict["shapes"][2]["statement_constraints"]) == 3
-    assert len(tapshapes_dict["shapes"][3]["statement_constraints"]) == 3
-    sh3Constraints = tapshapes_dict["shapes"][3]["statement_constraints"]
-    assert sh3Constraints[0]["propertyID"] == "rdf:type"
-    assert sh3Constraints[2]["severity"] == "Violation"
+    assert len(tapshapes_dict["shapes"]) == 2
+    assert tapshapes_dict["shapes"][0]["shapeID"] == "BookShape"
+    assert tapshapes_dict["shapes"][1]["shapeID"] == "AuthorShape"
+    assert len(tapshapes_dict["shapes"][0]["statement_constraints"]) == 4
+    assert len(tapshapes_dict["shapes"][1]["statement_constraints"]) == 3
     sh0Constraints =  tapshapes_dict["shapes"][0]["statement_constraints"]
-    # trying to understand why \ in a regex is exported as \\ in other progs
-    assert sh0Constraints[5]["propertyLabel"] == "Email address"
-    # in TAP value of email addr is regex: /.+@.+\..+/
-    PrettyPrinter().pprint(sh0Constraints[5]) # regex is stored with \\
-    print(sh0Constraints[5]["valueConstraint"]) # value prints as \
-    assert sh0Constraints[5]["valueConstraint"] == "/.+@.+\..+/"  # passes
-    assert sh0Constraints[5]["valueConstraint"] == "/.+@.+\\..+/" # also passes
+    sh1Constraints = tapshapes_dict["shapes"][1]["statement_constraints"]
+    assert sh0Constraints[0]["propertyID"] == "dct:title"
+    assert sh0Constraints[1]["propertyID"] == "dct:creator"
+    assert sh0Constraints[2]["propertyID"] == "sdo:isbn"
+    assert sh0Constraints[3]["propertyID"] == "rdf:type"
+    assert sh1Constraints[0]["propertyID"] == "rdf:type"
+    assert sh1Constraints[1]["propertyID"] == "foaf:givenName"
+    assert sh1Constraints[2]["propertyID"] == "foaf:familyName"
+    assert sh0Constraints[2]["propertyLabel"] == "ISBN-13"
+    assert sh0Constraints[2]["mandatory"] == "false"
+    assert sh0Constraints[2]["repeatable"] == "false"
+    assert sh0Constraints[2]["valueNodeType"] == "literal"
+    assert sh0Constraints[2]["valueDataType"] == "xsd:string"
+    assert sh0Constraints[2]["valueConstraint"] == "^(\\\\d{13})?$"
+    assert sh0Constraints[2]["valueConstraintType"] == "pattern"

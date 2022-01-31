@@ -20,57 +20,66 @@ def test_Converter():
 def test_initConverter(test_Converter):
     c = test_Converter
     assert c
-    assert len(c.tap["warnings_dict"]) == 4
+    assert len(c.tap["warnings_dict"]) == 2
     assert "shapes" in c.tap["shapes_dict"].keys()
     shapes_list = c.tap["shapes_dict"]["shapes"]
-    assert len(shapes_list) == 4
-    assert shapes_list[0]["shapeID"] == "#CredentialOrganization"
-    assert shapes_list[1]["shapeID"] == "#Address"
-    assert shapes_list[2]["shapeID"] == "#AgentTypeAlignment"
-    assert shapes_list[3]["shapeID"] == "#AgentSectorTypeAlignment"
-    s4 = shapes_list[3]
-    assert len(s4["statement_constraints"]) == 3
-    s4sc2 = s4["statement_constraints"][2]
-    assert s4sc2["propertyID"] == "ceterms:targetNode"
+    assert len(shapes_list) == 2
 
 
 def test_convert_namespaces(test_Converter):
     c = test_Converter
     assert c.ap.namespaces == {}
+    # first read in from TAP yaml file
     c.convert_namespaces("TAP")
-    assert len(c.ap.namespaces) == 16
-    assert c.ap.namespaces["default"] == "http://example.org/"
+    assert len(c.ap.namespaces) == 15
     assert c.ap.namespaces["xsd"] == "http://www.w3.org/2001/XMLSchema#"
+    assert c.ap.namespaces["ex"] == "http://example.org/"
+    # then overwrite/append from namespaces csv file
     c.convert_namespaces("csv", namespaceFileName)
-    assert len(c.ap.namespaces) == 18
+    assert len(c.ap.namespaces) == 19
+    # sh is declared without colon
     assert c.ap.namespaces["sh"] == "http://www.w3.org/ns/shacl#"
-
+    # rdf: is declared with colon
+    assert c.ap.namespaces["rdf"] == "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    # ex is changed
+    assert c.ap.namespaces["ex"] == "http://example.org/terms#"
+    # default has no prefix declared
+    assert c.ap.namespaces["default"] == "http://example.org/terms#"
 
 def test_load_AP_metadata(test_Converter):
     c = test_Converter
     assert c.ap.metadata == {}
     c.load_AP_Metadata(aboutFileName)
-    assert c.ap.metadata["url"] == "tap.csv"
-    assert c.ap.metadata["date"] == "2021-03-26"
+    assert c.ap.metadata["url"] == "https://docs.google.com/spreadsheets/d/1Vr_x1ckpxG0v8oq7FGB2Qea8G3ESPFvUWK89H0wJH9w/edit#gid=424305041"
+    assert c.ap.metadata["title"] == "Simple book AP"
+    assert c.ap.metadata["description"] == "Simple DC TAP for books"
+    assert c.ap.metadata["author"] == "Phil Barker"
+    assert c.ap.metadata["date"] == "2022-01-14"
+    assert c.ap.metadata["lang"] == "en"
 
 
 def test_load_shapeInfo(test_Converter):
     c = test_Converter
     assert c.ap.shapeInfo == {}
     c.ap.load_shapeInfo(shapesFileName)
-    assert (
-        c.ap.shapeInfo["#CredentialOrganization"]["label"]
-        == "Credential Organization Shape"
-    )
-    assert c.ap.shapeInfo["#Address"]["target"] == "ceterms:address"
-    assert c.ap.shapeInfo["#Address"]["targetType"] == "ObjectsOf"
+    assert len(c.ap.shapeInfo) == 2
+    book_shapeInfo = c.ap.shapeInfo["BookShape"]
+    author_shapeInfo = c.ap.shapeInfo["AuthorShape"]
+    assert book_shapeInfo["label"] == "Book"
+    assert author_shapeInfo["label"] == "Author"
+    assert author_shapeInfo["target"] == "dct:creator"
+    assert author_shapeInfo["targetType"] == "objectsof"
+    assert author_shapeInfo["closed"] == "TRUE"
+    assert author_shapeInfo["ignoreProps"] == "rdf:type"
+    assert author_shapeInfo["mandatory"] == "FALSE"
+    assert author_shapeInfo["severity"] == "Warning"
 
 
 def test_check_shapeID(test_Converter):
     c = test_Converter
-    sh_id = "#CredentialOrganization"
+    sh_id = "AuthorShape"
     sh_id = c.check_shapeID(sh_id)
-    assert sh_id == "#CredentialOrganization"
+    assert sh_id == "AuthorShape"
     sh_id = 2
     with pytest.raises(TypeError) as e:
         sh_id = c.check_shapeID(sh_id)
