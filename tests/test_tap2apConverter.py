@@ -36,7 +36,7 @@ def test_convert_namespaces(test_Converter):
     assert c.ap.namespaces["ex"] == "http://example.org/"
     # then overwrite/append from namespaces csv file
     c.convert_namespaces("csv", namespaceFileName)
-    assert len(c.ap.namespaces) == 18
+    assert len(c.ap.namespaces) == 19
     # sh is declared without colon
     assert c.ap.namespaces["sh"] == "http://www.w3.org/ns/shacl#"
     # rdf: is declared with colon
