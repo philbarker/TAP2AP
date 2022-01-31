@@ -194,9 +194,16 @@ class TAP2APConverter:
     def convert_notes(self, noteStr, ps):
         """Take string as note and add it to a propertyStatement."""
         # TODO: multiple notes, different languages
-        try:
+        lang_keys = ["lang", "language", "dc:language", "dct:language"]
+        if "lang" in self.ap.metadata.keys():
+            lang = self.ap.metadata["lang"]
+        elif "language" in self.ap.metadata.keys():
             lang = self.ap.metadata["language"]
-        except  (KeyError, ValueError):
+        elif "dc:language" in self.ap.metadata.keys():
+            lang = self.ap.metadata["dc:language"]
+        elif "dct:language" in self.ap.metadata.keys():
+            lang = self.ap.metadata["dct:language"]
+        else:
             lang = default_language
         if type(noteStr) == str:
             ps.add_note(lang, noteStr)
