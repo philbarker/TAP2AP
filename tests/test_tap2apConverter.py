@@ -36,7 +36,7 @@ def test_convert_namespaces(test_Converter):
     assert c.ap.namespaces["ex"] == "http://example.org/"
     # then overwrite/append from namespaces csv file
     c.convert_namespaces("csv", namespaceFileName)
-    assert len(c.ap.namespaces) == 19
+    assert len(c.ap.namespaces) == 18
     # sh is declared without colon
     assert c.ap.namespaces["sh"] == "http://www.w3.org/ns/shacl#"
     # rdf: is declared with colon
@@ -44,6 +44,7 @@ def test_convert_namespaces(test_Converter):
     # ex is changed
     assert c.ap.namespaces["ex"] == "http://example.org/terms#"
     # default has no prefix declared
+    print(c.ap.namespaces)
     assert c.ap.namespaces["default"] == "http://example.org/terms#"
 
 def test_load_AP_metadata(test_Converter):
@@ -69,9 +70,9 @@ def test_load_shapeInfo(test_Converter):
     assert author_shapeInfo["label"] == "Author"
     assert author_shapeInfo["target"] == "dct:creator"
     assert author_shapeInfo["targetType"] == "objectsof"
-    assert author_shapeInfo["closed"] == "TRUE"
-    assert author_shapeInfo["ignoreProps"] == "rdf:type"
-    assert author_shapeInfo["mandatory"] == "FALSE"
+    assert author_shapeInfo["closed"] == True
+    assert author_shapeInfo["ignoreProps"] == ["rdf:type"]
+    assert author_shapeInfo["mandatory"] == False
     assert author_shapeInfo["severity"] == "Warning"
 
 
