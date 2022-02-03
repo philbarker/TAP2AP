@@ -1,7 +1,7 @@
 import pytest
 from dctap import csvreader  # , TAPShape, TAPStatementConstraint
 from dctap.config import get_config
-from AP import AP, PropertyStatement
+from AP import AP, PropertyStatement, ShapeInfo
 from tap2ap import TAP2APConverter
 
 tapFileName = "tests/TestData/tap.csv"
@@ -60,20 +60,20 @@ def test_load_AP_metadata(test_Converter):
 
 
 def test_load_shapeInfo(test_Converter):
+    # this tests a method from the imported AP classes
     c = test_Converter
     assert c.ap.shapeInfo == {}
     c.ap.load_shapeInfo(shapesFileName)
     assert len(c.ap.shapeInfo) == 2
     book_shapeInfo = c.ap.shapeInfo["BookShape"]
     author_shapeInfo = c.ap.shapeInfo["AuthorShape"]
-    assert book_shapeInfo["label"] == "Book"
-    assert author_shapeInfo["label"] == "Author"
-    assert author_shapeInfo["target"] == "dct:creator"
-    assert author_shapeInfo["targetType"] == "objectsof"
-    assert author_shapeInfo["closed"] == True
-    assert author_shapeInfo["ignoreProps"] == ["rdf:type"]
-    assert author_shapeInfo["mandatory"] == False
-    assert author_shapeInfo["severity"] == "Warning"
+    assert book_shapeInfo.label == {"en": "Book"}
+    assert author_shapeInfo.label == {"en": "Author"}
+    assert author_shapeInfo.targets == {"objectsof": "dct:creator", "class": "sdo:Person"}
+    assert author_shapeInfo.closed == True
+    assert author_shapeInfo.ignoreProps == ["rdf:type"]
+    assert author_shapeInfo.mandatory == False
+    assert author_shapeInfo.severity == "warning"
 
 
 def test_check_shapeID(test_Converter):
@@ -228,20 +228,22 @@ def test_convert_valueConstraintType(test_Converter):
 def test_convert_shapes(test_Converter):
     c = test_Converter
     ps = PropertyStatement()
-    shapes = "#Address,#Contact"
-    c.ap.add_shapeInfo("#Address", {"label": "Address"})
-    c.ap.add_shapeInfo("#Contact", {"label": "Contact"})
+    shapes = "AddressShape,ContactShape"
+    addressShapeInfo = ShapeInfo(label= "Address")
+    contactShapeInfo = ShapeInfo(label= "Contact")
+    c.ap.add_shapeInfo("AddressShape", addressShapeInfo)
+    c.ap.add_shapeInfo("ContactShape", contactShapeInfo)
     c.convert_valueShapes(shapes, ps)
-    for sh in ["#Address", "#Contact"]:
+    for sh in ["AddressShape", "ContactShape"]:
         assert sh in ps.valueShapes
-    shapes = ["#Address", "#Contact"]
+    shapes = ["AddressShape", "ContactShape"]
     with pytest.raises(TypeError) as e:
         c.convert_valueShapes(shapes, ps)
     assert str(e.value) == "Value for shapes must be a string."
-    shapes = "#notAShapeID"
+    shapes = "notAShapeID"
     with pytest.raises(ValueError) as e:
         c.convert_valueShapes(shapes, ps)
-    assert str(e.value) == "No shape info for #notAShapeID"
+    assert str(e.value) == "No shape info for notAShapeID"
 
 
 def test_convert_notes(test_Converter):
