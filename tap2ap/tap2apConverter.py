@@ -43,7 +43,7 @@ class TAP2APConverter:
         for shape in shapes:
             # check shapeID once and add it to all prop statements in shape
             sh_id = self.check_shapeID(shape["shapeID"])
-            for sc in shape["statement_constraints"]:
+            for sc in shape["statement_templates"]:
                 ps = PropertyStatement()
                 ps.add_shape(sh_id)
                 # property ID is mandatory, no need to check for key

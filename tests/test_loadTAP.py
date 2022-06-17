@@ -18,13 +18,14 @@ def test_loadTAP():
     tapshapes_dict, warnings_dict = csvreader_output
     assert len(warnings_dict) == 2
     assert "shapes" in tapshapes_dict.keys()
+#    print(tapshapes_dict)
     assert len(tapshapes_dict["shapes"]) == 2
     assert tapshapes_dict["shapes"][0]["shapeID"] == "BookShape"
     assert tapshapes_dict["shapes"][1]["shapeID"] == "AuthorShape"
-    assert len(tapshapes_dict["shapes"][0]["statement_constraints"]) == 4
-    assert len(tapshapes_dict["shapes"][1]["statement_constraints"]) == 3
-    sh0Constraints =  tapshapes_dict["shapes"][0]["statement_constraints"]
-    sh1Constraints = tapshapes_dict["shapes"][1]["statement_constraints"]
+    assert len(tapshapes_dict["shapes"][0]["statement_templates"]) == 4
+    assert len(tapshapes_dict["shapes"][1]["statement_templates"]) == 3
+    sh0Constraints =  tapshapes_dict["shapes"][0]["statement_templates"]
+    sh1Constraints = tapshapes_dict["shapes"][1]["statement_templates"]
     assert sh0Constraints[0]["propertyID"] == "dct:title"
     assert sh0Constraints[1]["propertyID"] == "dct:creator"
     assert sh0Constraints[2]["propertyID"] == "sdo:isbn"
