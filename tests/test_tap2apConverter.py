@@ -1,7 +1,7 @@
 import pytest
 from dctap import csvreader  # , TAPShape, TAPStatementConstraint
 from dctap.config import get_config
-from AP import AP, PropertyStatement, ShapeInfo
+from AP import AP, StatementTemplate, ShapeInfo
 from tap2ap import TAP2APConverter
 
 tapFileName = "tests/TestData/tap.csv"
@@ -93,7 +93,7 @@ def test_check_shapeID(test_Converter):
 
 def test_convert_propertyIDs(test_Converter):
     c = test_Converter
-    ps = PropertyStatement()
+    ps = StatementTemplate()
     p_id = "test1, test2 test3,test4;test5\ntest6"
     c.convert_propertyIDs(p_id, ps)
     for p in ["test1", "test2", "test3", "test4", "test5", "test6"]:
@@ -106,7 +106,7 @@ def test_convert_propertyIDs(test_Converter):
 
 def test_convert_labels(test_Converter):
     c = test_Converter
-    ps = PropertyStatement()
+    ps = StatementTemplate()
     label = "test one"
     c.convert_labels(label, ps)
     ps.labels == [{"en": "test one"}]
@@ -118,7 +118,7 @@ def test_convert_labels(test_Converter):
 
 def test_convert_mandatory(test_Converter):
     c = test_Converter
-    ps = PropertyStatement()
+    ps = StatementTemplate()
     m = "False"
     c.convert_mandatory(m, ps)
     assert ps.mandatory == False
@@ -140,7 +140,7 @@ def test_convert_mandatory(test_Converter):
 
 def test_convert_repeatable(test_Converter):
     c = test_Converter
-    ps = PropertyStatement()
+    ps = StatementTemplate()
     r = "False"
     c.convert_repeatable(r, ps)
     assert ps.repeatable == False
@@ -162,7 +162,7 @@ def test_convert_repeatable(test_Converter):
 
 def test_convert_valueNodeTypes(test_Converter):
     c = test_Converter
-    ps = PropertyStatement()
+    ps = StatementTemplate()
     vNT = "IRI, bnode"
     c.convert_valueNodeTypes(vNT, ps)
     assert "IRI" in ps.valueNodeTypes
@@ -175,7 +175,7 @@ def test_convert_valueNodeTypes(test_Converter):
 
 def test_convert_valueDataTypes(test_Converter):
     c = test_Converter
-    ps = PropertyStatement()
+    ps = StatementTemplate()
     vDT = "xsd:date; xsd:time"
     c.convert_valueDataTypes(vDT, ps)
     assert "xsd:date" in ps.valueDataTypes
@@ -188,7 +188,7 @@ def test_convert_valueDataTypes(test_Converter):
 
 def test_convert_valueConstraints(test_Converter):
     c = test_Converter
-    ps = PropertyStatement()
+    ps = StatementTemplate()
     vC = """orgType:AssessmentBody
 orgType:Business"""
     c.convert_valueConstraints(vC, ps)
@@ -215,7 +215,7 @@ orgType:Business"""
 
 def test_convert_valueConstraintType(test_Converter):
     c = test_Converter
-    ps = PropertyStatement()
+    ps = StatementTemplate()
     vCT = "pattern"
     c.convert_valueConstraintType(vCT, ps)
     assert ps.valueConstraintType == "pattern"
@@ -227,7 +227,7 @@ def test_convert_valueConstraintType(test_Converter):
 
 def test_convert_shapes(test_Converter):
     c = test_Converter
-    ps = PropertyStatement()
+    ps = StatementTemplate()
     shapes = "AddressShape,ContactShape"
     addressShapeInfo = ShapeInfo(label= "Address")
     contactShapeInfo = ShapeInfo(label= "Contact")
@@ -248,7 +248,7 @@ def test_convert_shapes(test_Converter):
 
 def test_convert_notes(test_Converter):
     c = test_Converter
-    ps = PropertyStatement()
+    ps = StatementTemplate()
     note = "test one"
     c.convert_notes(note, ps)
     assert ps.notes == {"en": "test one"}
@@ -260,7 +260,7 @@ def test_convert_notes(test_Converter):
 
 def test_convert_severity(test_Converter):
     c = test_Converter
-    ps = PropertyStatement()
+    ps = StatementTemplate()
     sev = "Violation"
     c.convert_severity(sev, ps)
     assert ps.severity == "Violation"

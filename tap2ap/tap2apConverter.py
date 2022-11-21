@@ -1,7 +1,7 @@
 from csv import DictReader
 from dctap import csvreader  # , TAPShape, TAPStatementConstraint
 from dctap.config import get_config
-from AP import AP, PropertyStatement
+from AP import AP, StatementTemplate
 import re
 
 # defaults may be overridden by metadata file e.g. about.csv
@@ -44,7 +44,7 @@ class TAP2APConverter:
             # check shapeID once and add it to all prop statements in shape
             sh_id = self.check_shapeID(shape["shapeID"])
             for sc in shape["statement_templates"]:
-                ps = PropertyStatement()
+                ps = StatementTemplate()
                 ps.add_shape(sh_id)
                 # property ID is mandatory, no need to check for key
                 self.convert_propertyIDs(sc["propertyID"], ps)
@@ -68,7 +68,7 @@ class TAP2APConverter:
                     self.convert_notes(sc["note"], ps)
                 if "severity" in sc.keys():
                     self.convert_severity(sc["severity"], ps)
-                self.ap.add_propertyStatement(ps)
+                self.ap.add_statementTemplate(ps)
 
     def check_shapeID(self, sh_id):
         """Check a string matches a shape id."""
@@ -87,7 +87,7 @@ class TAP2APConverter:
         return sh_id
 
     def convert_propertyIDs(self, propertiesStr, ps):
-        """Convert a string to a list of property ids, add them to a propertyStatement."""
+        """Convert a string to a list of property ids, add them to a statementTemplate."""
         if type(propertiesStr) == str:
             for p in re.split(prop_splitters, propertiesStr):
                 ps.add_property(p)
@@ -96,7 +96,7 @@ class TAP2APConverter:
             raise TypeError(msg)
 
     def convert_labels(self, label, ps):
-        """Take string as label and add it to a propertyStatement."""
+        """Take string as label and add it to a statementTemplate."""
         # TODO: multiple labels, different languages
         try:
             lang = self.ap.metadata["language"]
@@ -109,7 +109,7 @@ class TAP2APConverter:
             raise TypeError(msg)
 
     def convert_mandatory(self, mandyStr, ps):
-        """Convert a string to boolean true or false and add it as value of the `mandatory` property of propertyStatement."""
+        """Convert a string to boolean true or false and add it as value of the `mandatory` property of statementTemplate."""
         if type(mandyStr) == str:
             if mandyStr.lower() in trueVals:
                 ps.add_mandatory(True)
@@ -123,7 +123,7 @@ class TAP2APConverter:
             raise TypeError(msg)
 
     def convert_repeatable(self, rptStr, ps):
-        """Convert a string to boolean true or false and add it as value of the `repeatable` property of propertyStatement."""
+        """Convert a string to boolean true or false and add it as value of the `repeatable` property of statementTemplate."""
         if type(rptStr) == str:
             if rptStr.lower() in trueVals:
                 ps.add_repeatable(True)
@@ -137,7 +137,7 @@ class TAP2APConverter:
             raise TypeError(msg)
 
     def convert_valueNodeTypes(self, nodeTypesStr, ps):
-        """Convert a string of node types and into separate types and add them as values of the `valueNodeTypes` property of propertyStatement."""
+        """Convert a string of node types and into separate types and add them as values of the `valueNodeTypes` property of statementTemplate."""
         if type(nodeTypesStr) == str:
             for nodeType in re.split(nodeType_splitters, nodeTypesStr):
                 ps.add_valueNodeType(nodeType)
@@ -146,7 +146,7 @@ class TAP2APConverter:
             raise TypeError(msg)
 
     def convert_valueDataTypes(self, dataTypesStr, ps):
-        """Convert a string of data types and into separate types and add them as values of the `valueNodeTypes` property of propertyStatement."""
+        """Convert a string of data types and into separate types and add them as values of the `valueNodeTypes` property of statementTemplate."""
         if type(dataTypesStr) == str:
             for dataType in re.split(dataType_splitters, dataTypesStr):
                 ps.add_valueDataType(dataType)
@@ -155,7 +155,7 @@ class TAP2APConverter:
             raise TypeError(msg)
 
     def convert_valueConstraints(self, constraints, ps):
-        """Convert a string of constraints into separate items and add them as values of the `valueConstraints` property of propertyStatement."""
+        """Convert a string of constraints into separate items and add them as values of the `valueConstraints` property of statementTemplate."""
         if type(constraints) is str:
             for constraint in re.split(constraint_splitters, constraints):
                 ps.add_valueConstraint(constraint)
@@ -173,7 +173,7 @@ class TAP2APConverter:
             raise TypeError(msg)
 
     def convert_valueConstraintType(self, constrTypeStr, ps):
-        """Add a string as the value of the `valueConstraintType` property of propertyStatement."""
+        """Add a string as the value of the `valueConstraintType` property of statementTemplate."""
         if type(constrTypeStr) == str:
             ps.add_valueConstraintType(constrTypeStr)
         else:
@@ -181,7 +181,7 @@ class TAP2APConverter:
             raise TypeError(msg)
 
     def convert_valueShapes(self, shapeStr, ps):
-        """Convert a string of shapes into separate items and add them as values of the `valueShapes` property of propertyStatement."""
+        """Convert a string of shapes into separate items and add them as values of the `valueShapes` property of statementTemplate."""
 
         if type(shapeStr) == str:
             for shape in re.split(shape_splitters, shapeStr):
@@ -192,7 +192,7 @@ class TAP2APConverter:
             raise TypeError(msg)
 
     def convert_notes(self, noteStr, ps):
-        """Take string as note and add it to a propertyStatement."""
+        """Take string as note and add it to a statementTemplate."""
         # TODO: multiple notes, different languages
         lang_keys = ["lang", "language", "dc:language", "dct:language"]
         if "lang" in self.ap.metadata.keys():
@@ -212,7 +212,7 @@ class TAP2APConverter:
             raise TypeError(msg)
 
     def convert_severity(self, severityStr, ps):
-        """Add a string as the value of the `severity` property of propertyStatement."""
+        """Add a string as the value of the `severity` property of statementTemplate."""
         if type(severityStr) == str:
             ps.add_severity(severityStr)
         else:

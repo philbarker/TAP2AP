@@ -2,7 +2,7 @@
 
 from dctap import csvreader  # , TAPShape, TAPStatementConstraint
 from dctap.config import get_config
-from AP import AP, PropertyStatement
+from AP import AP, StatementTemplate
 from tap2ap import TAP2APConverter
 from getch import getch, pause
 
