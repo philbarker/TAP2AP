@@ -69,7 +69,7 @@ def test_load_shapeInfo(test_Converter):
     author_shapeInfo = c.ap.shapeInfo["AuthorShape"]
     assert book_shapeInfo.label == {"en": "Book"}
     assert author_shapeInfo.label == {"en": "Author"}
-    assert author_shapeInfo.targets == {"objectsof": "dct:creator", "class": "sdo:Person"}
+    assert author_shapeInfo.targets == {"objectsof": ["dct:creator"], "class": ["sdo:Person"]}
     assert author_shapeInfo.closed == True
     assert author_shapeInfo.ignoreProps == ["rdf:type"]
     assert author_shapeInfo.mandatory == False
