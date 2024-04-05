@@ -235,4 +235,4 @@ class TAP2APConverter:
             self.ap.load_namespaces(fname)
         else:
             msg = 'source for namespaces must be "TAP" or "csv".'
-            raise exception(msg)
+            raise ValueError(msg)
