@@ -1,1 +1,6 @@
-Class tap2ap will read a DC TAP (Dublin Core Tabular Application Profile), with some config files, and convert it to a python data object (AP). Other programs can do more interesting things with the AP.
+DISCONTINUED
+
+Use https://github.com/philbarker/TAP2SHACL/ instead.
+
+The code from this repository was transfered to the src/tap2ap folder of TAP2SHACL.
+
